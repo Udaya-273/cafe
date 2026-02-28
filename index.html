@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Udaya's Cafe - Restaurant POS</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="brand">
+    </div>
+    <nav class="main-nav">
+      <button class="nav-tab active" data-target="billing-section">
+        Billing
+      </button>
+      <button class="nav-tab" data-target="reports-section">
+        Monthly Report
+      </button>
+      <button class="nav-tab" data-target="menu-section">
+        Manage Menu
+      </button>
+    </nav>
+  </header>
+
+  <div class="hero-section">
+    <div class="hero-content">
+      <h2 class="hero-title">Udaya's Cafe</h2>
+      <p class="hero-subtitle">Authentic South Indian Flavors</p>
+    </div>
+  </div>
+
+  <main class="app-main">
+    <!-- Billing / POS Section -->
+    <section id="billing-section" class="tab-section tab-section-active" aria-label="Billing">
+      <div class="billing-layout">
+        <div class="menu-panel">
+          <h2 class="section-title">FEATURED MENU</h2>
+          <p class="section-desc">Savor the rich, authentic taste of our carefully curated specialties, crafted to
+            absolute perfection just for you.</p>
+          <div id="menu-grid" class="menu-grid">
+            <!-- Menu items rendered by JS -->
+          </div>
+        </div>
+
+        <aside class="cart-panel">
+          <h2>Current Bill</h2>
+          <div id="cart-items" class="cart-items">
+            <!-- Cart items rendered by JS -->
+            <p class="empty-cart-text">No items added yet.</p>
+          </div>
+          <div class="cart-totals">
+            <div class="row">
+              <span>Subtotal</span>
+              <span id="subtotal-amount">₹0.00</span>
+            </div>
+            <div class="row total-row">
+              <span>Total</span>
+              <span id="total-amount">₹0.00</span>
+            </div>
+          </div>
+          <div class="cart-actions">
+            <button id="pay-now-btn" class="primary" disabled>
+              Pay Now (QR)
+            </button>
+            <button id="print-bill-btn" disabled>Print Bill</button>
+            <button id="clear-cart-btn" class="secondary" disabled>
+              Clear Cart
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Monthly Sales Report Section -->
+    <section id="reports-section" class="tab-section" aria-label="Monthly Sales Report">
+      <div class="section-header">
+        <h2>Monthly Sales Report</h2>
+        <div class="filters">
+          <label>
+            Month
+            <select id="report-month-select"></select>
+          </label>
+          <label>
+            Year
+            <select id="report-year-select"></select>
+          </label>
+          <button id="refresh-report-btn">Refresh</button>
+        </div>
+      </div>
+
+      <div class="report-summary" id="report-summary">
+        <!-- Summary cards rendered by JS -->
+      </div>
+
+      <div class="report-table-wrapper">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Bill ID</th>
+              <th>Date &amp; Time</th>
+              <th>Items</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="report-table-body">
+            <!-- Rows rendered by JS -->
+          </tbody>
+        </table>
+        <p id="report-empty-text" class="muted-text">
+          No bills recorded for the selected month.
+        </p>
+      </div>
+    </section>
+
+    <!-- Manage Menu Section -->
+    <section id="menu-section" class="tab-section" aria-label="Manage Menu">
+      <div class="section-header">
+        <h2>Manage Menu</h2>
+        <button id="reset-menu-btn" class="secondary small">
+          Reset to Default Items
+        </button>
+      </div>
+
+      <div class="manage-layout">
+        <form id="menu-form" class="menu-form">
+          <input type="hidden" id="menu-item-id" />
+
+          <div class="form-row">
+            <label for="item-name">Item Name</label>
+            <input id="item-name" type="text" required placeholder="e.g. Masala Dosai" />
+          </div>
+
+          <div class="form-row">
+            <label for="item-category">Category</label>
+            <input id="item-category" type="text" placeholder="e.g. Breakfast, Beverages" />
+          </div>
+
+          <div class="form-row">
+            <label for="item-price">Price (₹)</label>
+            <input id="item-price" type="number" min="0" step="1" required placeholder="e.g. 40" />
+          </div>
+
+          <div class="form-row">
+            <label for="item-image-url">Image URL (optional)</label>
+            <input id="item-image-url" type="text" placeholder="Paste image URL or leave blank" />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary">
+              Save Item
+            </button>
+            <button type="button" id="cancel-edit-btn" class="secondary">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="menu-table-wrapper">
+          <table class="menu-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price (₹)</th>
+                <th>Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="menu-table-body">
+              <!-- Menu rows rendered by JS -->
+            </tbody>
+          </table>
+          <p id="menu-empty-text" class="muted-text">
+            No menu items yet. Use the form to add your first item.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pay Now QR Modal -->
+  <div id="qr-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal>&times;</button>
+      <div style="text-align: center;">
+        <h2 style="margin-bottom: 0.5rem;">Scan &amp; Pay</h2>
+        <p class="muted-text" style="margin-bottom: 1rem;">
+          Scan to pay with any UPI app
+        </p>
+      </div>
+      <div class="qr-wrapper" id="qr-code-container">
+        <!-- Dynamically filled in JS -->
+        <div class="qr-placeholder">
+          <div class="qr-square"></div>
+          <div class="qr-square small"></div>
+          <div class="qr-square tiny"></div>
+        </div>
+      </div>
+      <p style="text-align: center; font-size: 0.95rem; margin-top: 0; margin-bottom: 1rem; color: #374151;">
+        UPI ID: <strong>udayakey27-2@oksbi</strong><br>
+        Name: <strong>Udaya M</strong>
+      </p>
+      <p class="qr-total" style="border-top: 1px dashed #e5e7eb; padding-top: 0.75rem;">
+        Bill Total:
+        <strong id="qr-total-amount">₹0.00</strong>
+      </p>
+      <button id="mark-paid-btn" class="primary" style="width: 100%;">
+        Mark as Paid &amp; Save Bill
+      </button>
+    </div>
+  </div>
+
+  <!-- Printable Bill Area (hidden on screen, visible in print) -->
+  <section id="print-area" class="print-area">
+    <div class="receipt">
+      <h1>Udaya's Cafe</h1>
+      <p>South Indian Veg Restaurant</p>
+      <p id="print-bill-meta"></p>
+      <table id="print-bill-items">
+        <!-- Filled by JS -->
+      </table>
+      <div id="print-bill-totals"></div>
+      <p class="thank-you">Thank you! Visit again.</p>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    <div class="footer-col">
+      <h3>Udaya's Cafe</h3>
+      <p>123 South Indian Street,<br>Food City, IN 560001</p>
+    </div>
+    <div class="footer-col">
+      <h3>Our Menu</h3>
+      <p>Featured Items<br>Special Deals<br>Beverages</p>
+    </div>
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <p>+91 98765 43210<br>hello@udayascafe.com</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
